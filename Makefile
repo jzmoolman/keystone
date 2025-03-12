@@ -25,7 +25,7 @@ export BUILDROOT_BUILDDIR       ?= $(BUILDDIR)/buildroot.build
 
 
 # options: generic, cva6, hifive_unmatched, mpfs
-export KEYSTONE_PLATFORM        ?= generic
+export KEYSTONE_PLATFORM        ?= rocket
 export KEYSTONE_BITS            ?= 64
 
 include mkutils/args.mk
@@ -42,6 +42,9 @@ EXTERNALS += keystone
 
 BUILDROOT_MAKEFLAGS     := -C $(KEYSTONE_BUILDROOT) O=$(BUILDROOT_BUILDDIR)
 BUILDROOT_MAKEFLAGS     += BR2_EXTERNAL=$(call SEPERATE_LIST,:,$(addprefix $(KEYSTONE_BR2_EXT)/,$(EXTERNALS)))
+
+# add rule for path
+export LIBSODIUM_C_DIR="/home/jzmoolman/src/keystone
 
 #####################
 ## Generic targets ##
@@ -90,8 +93,10 @@ BUILDROOT_TARGET        ?= all
 .PHONY: buildroot
 buildroot: $(BUILDROOT_BUILDDIR)/.config $(BUILDROOT_OVERLAYDIR)/.done
 	$(call log,info,Building Buildroot)
+	$(info "$(MAKE) $(BUILDROOT_MAKEFLAGS) $(BUILDROOT_TARGET)")
 	set -o pipefail ; $(MAKE) $(BUILDROOT_MAKEFLAGS) $(BUILDROOT_TARGET) 2>&1 | \
             tee $(BUILDDIR)/build.log | LC_ALL=C grep -of scripts/grep.patterns
+
 
 # Useful configuration target. This is meant as a development helper to keep
 # the repository configuration in sync with what the user is doing. It
@@ -123,23 +128,3 @@ linux-configure: $(BUILDROOT_BUILDDIR)/.config
 
 -include mkutils/plat/$(KEYSTONE_PLATFORM)/run.mk
 
-PORT_ARGS :=
-ifneq ($(KEYSTONE_PORT),)
-	PORT_ARGS += -p $(KEYSTONE_PORT)
-endif
-
-IP_ARGS :=
-ifeq ($(KEYSTONE_IP),)
-	IP_ARGS += localhost
-else
-	IP_ARGS += $(KEYSTONE_IP)
-endif
-
-CALL_LOGFILE ?= $(shell mktemp)
-call:
-	$(call log,info,Calling command)
-	ssh -i $(BUILDROOT_BUILDDIR)/target/root/.ssh/id-rsa \
-		-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-		-o ConnectTimeout=5 \
-		$(PORT_ARGS) root@$(IP_ARGS) $(KEYSTONE_COMMAND) 2>&1 | \
-		 grep -v "Warning: Permanently added" | tee -a $(CALL_LOGFILE)

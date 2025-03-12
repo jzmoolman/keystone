@@ -171,6 +171,8 @@ void sm_init(bool cold_boot)
 
   sm_print_hash();
 
+  sbi_printf("sm_print_hash => OK\n");
+
   return;
   // for debug
   // sm_print_cert();

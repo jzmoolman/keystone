@@ -8,6 +8,6 @@ index f619ef7..9a4bdef 100644
    else
 -    PLATFORM=$(shell basename $(platform_dir_path))
 +    PLATFORM=$(notdir $(basename $(platform_dir_path)))
-     platform_parent_dir=$(subst $(PLATFORM),,$(platform_dir_path))
+     platform_parent_dir=$(shell realpath ${platform_dir_path}/..)
    endif
  else
