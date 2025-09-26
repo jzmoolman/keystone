@@ -4,10 +4,10 @@
 ##############
 
 # Bootloaders
-include $(sort $(wildcard $(BR2_EXTERNAL_KEYSTONE_PATH)/boot/*/*.mk))
+include $(sort $(wildcard $(BR2_EXTERNAL_MYKEYSTONE_PATH)/boot/*/*.mk))
 
 # Packages
-include $(sort $(wildcard $(BR2_EXTERNAL_KEYSTONE_PATH)/package/*/*.mk))
+include $(sort $(wildcard $(BR2_EXTERNAL_MYKEYSTONE_PATH)/package/*/*.mk))
 
 ######################
 ## Platform patches ##

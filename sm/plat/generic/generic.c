@@ -1,22 +1,34 @@
+#include <sbi/sbi_platform.h>
+#include <sbi/sbi_console.h>
+#include <sbi_utils/fdt/fdt_driver.h>
 
-#include <platform_override.h>
-#include <sbi_utils/fdt/fdt_helper.h>
-#include <sbi_utils/fdt/fdt_fixup.h>
 
-#include "sm.h"
+const struct sbi_platform generic = {
+    .name       = "dummy",
+    .features   = SBI_PLATFORM_DEFAULT_FEATURES,
+    .hart_count = 1,
+};
 
-static int generic_final_init(bool cold_boot, const struct fdt_match *match) {
-        sm_init(cold_boot);
-        return 0;
+static int my_platform_init(const void *fdt, int nodeoff,
+                         const struct fdt_match *match)
+{
+    sbi_printf("MyBoard: custom final_init override (OpenSBI 1.7 style)\n");
+
+    if (match && match->compatible)
+        sbi_printf("FDT compatible: %s\n", match->compatible);
+
+    return 0;
 }
 
-static const struct fdt_match generic_match[] = {
-	{ .compatible = "riscv-virtio" },
-	{ .compatible = "riscv-virtio,qemu" },
-	{ },
+
+static const struct fdt_match my_platform_match[] = {
+    { .compatible = "riscv-virt" },
+    { /* sentinel */ }
 };
 
-const struct platform_override generic = {
-	.match_table = generic_match,
-        .final_init = generic_final_init
+/* --- FDT driver --- */
+struct fdt_driver my_platform_driver = {
+    .match_table = my_platform_match,
+    .init        = my_platform_init,   /* <-- replaces old final_init */
 };
+

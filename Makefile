@@ -32,6 +32,8 @@ include mkutils/args.mk
 include mkutils/log.mk
 
 BUILDROOT_CONFIGFILE    ?= riscv$(KEYSTONE_BITS)_$(KEYSTONE_PLATFORM)_defconfig
+
+$(info $(BUILDROOT_CONFIGFILE))
 ifeq ($(KEYSTONE_PLATFORM),mpfs)
 	EXTERNALS		+= microchip
 	ADDITIONAL_OVERLAYS  	:= \$$(BR2_EXTERNAL_MCHP_PATH)/board/microchip/icicle/rootfs-overlay
@@ -117,6 +119,11 @@ linux-configure: $(BUILDROOT_BUILDDIR)/.config
                                     awk -F'=' '{ print $$2 }' | sed 's;$$(BR2_EXTERNAL_KEYSTONE_PATH);$(KEYSTONE_BR2_EXT)/keystone;g' | tr -d '"'); \
             mv "$(BUILDROOT_BUILDDIR)/$$LINUX_BUILDDIR/defconfig" "$$LINUX_CONFIGFILE"
 
+
+
+run-debug: $(BUILDROOT_BUILDDIR)/.config $(BUILDROOT_OVERLAYDIR)/.done
+	make -C /home/jzmoolman/src/keystone//buildroot O=/home/jzmoolman/src/keystone//build-generic64/buildroot.build BR2_EXTERNAL=/home/jzmoolman/src/keystone//overlays/keystone keystone-sm-dirclean
+	
 #################
 ## Run targets ##
 #################

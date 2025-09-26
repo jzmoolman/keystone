@@ -2,6 +2,8 @@
 ## Headers ##
 #############
 
+$(info sm/src/objects.mk)
+
 # General headers
 keystone-sm-headers += sm_assert.h cpu.h enclave.h ipi.h mprv.h page.h platform-hook.h \
                         pmp.h safe_math_util.h sm.h sm-sbi.h sm-sbi-opensbi.h thread.h

@@ -6,7 +6,8 @@
 #define _KEYSTONE_USER_H_
 
 #include <linux/ioctl.h>
-#include <linux/types.h>
+#include <linux/types.h> //is this still required
+#include <cstdint>
 
 #include "sm_call.h"
 

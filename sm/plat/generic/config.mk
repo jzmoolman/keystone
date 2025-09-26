@@ -1,4 +1,7 @@
 # Here, we just include the config.mk from the standard generic implementation
+$(info <<== sm/plat/generic/config.mk)
+$(info $(src_dir)/platform/$(PLATFORM)/config.mk)
+
 include $(src_dir)/platform/$(PLATFORM)/config.mk
 
 # We do need to make sure to include headers for the SM
@@ -12,3 +15,5 @@ endif
 
 platform-cflags-y = -I$(KEYSTONE_SM)/src -I$(src_dir)/platform/$(PLATFORM)/include \
                         -I$(KEYSTONE_SDK_DIR)/include/shared
+
+$(info <<== sm/plat/generic/config.mk)
