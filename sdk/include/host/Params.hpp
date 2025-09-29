@@ -6,6 +6,8 @@
 
 #include <cstdio>
 
+#include <stdint.h>
+
 #if __riscv_xlen == 64
 #define DEFAULT_FREEMEM_SIZE 1024 * 1024  // 1 MB
 #define DEFAULT_UNTRUSTED_PTR 0xffffffff80000000

@@ -10,7 +10,9 @@ macro(global_set Name Value)
 endmacro()
 
 macro(use_riscv_toolchain bits)
-  set(cross_compile riscv${bits}-buildroot-linux-gnu-)
+  #set(cross_compile riscv${bits}-buildroot-linux-gnu-)
+  set(cross_compile riscv${bits}-buildroot-linux-uclibc-)
+
   execute_process(
     COMMAND which ${cross_compile}gcc
     OUTPUT_VARIABLE CROSSCOMPILE

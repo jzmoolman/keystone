@@ -103,7 +103,7 @@ buildroot-configure: $(BUILDROOT_BUILDDIR)/.config
 	$(call log,info,Configuring Buildroot)
 	$(MAKE) $(BUILDROOT_MAKEFLAGS) menuconfig
 	$(call log,debug,Saving new defconfig)
-	$(MAKE) $(BUILDROOT_MAKEFLAGS) savedefconfig
+	$(MAKE) $(BUILDROOT_MAKEFLAGS) SAVEDCONFIG=$(KEYSTONE_BR2_EXT)/keystone/configs/$(BUILDROOT_CONFIGFILE) savedefconfig
 	sed -i '/BR2_ROOTFS_OVERLAY.*/d' $(KEYSTONE_BR2_EXT)/keystone/configs/$(BUILDROOT_CONFIGFILE)
 
 .PHONY: linux-configure

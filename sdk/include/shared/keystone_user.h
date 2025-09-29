@@ -8,6 +8,8 @@
 #include <linux/ioctl.h>
 #include <linux/types.h>
 
+#include <stdint.h>
+
 #include "sm_call.h"
 
 // Linux generic TEE subsystem magic defined in <linux/tee.h>

@@ -11,10 +11,10 @@ QEMU_SMP        ?= 4
 
 
 QEMU_FLAGS := -m $(QEMU_MEM) -smp $(QEMU_SMP) -nographic \
-                -machine virt,rom=$(BUILDROOT_BUILDDIR)/images/bootrom.bin \
+                -machine virt \
                 -bios $(BUILDROOT_BUILDDIR)/images/fw_jump.elf \
                 -kernel $(BUILDROOT_BUILDDIR)/images/Image \
-                -drive file=$(BUILDROOT_BUILDDIR)/images/rootfs.ext2,format=raw,id=hd0 \
+                -drive file=$(BUILDROOT_BUILDDIR)/images/rootfs.ext2,format=raw,id=hd0,if=none \
                 -device virtio-blk-device,drive=hd0 \
                 -append "console=ttyS0 ro root=/dev/vda" \
                 -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::$(KEYSTONE_PORT)-:22 \
@@ -27,7 +27,7 @@ endif
 
 run:
 	$(call log,info,Starting QEMU)
-	$(BUILDROOT_BUILDDIR)/host/bin/qemu-system-riscv$(KEYSTONE_BITS) $(QEMU_FLAGS)
+	/usr/bin/qemu-system-riscv64  $(QEMU_FLAGS)
 
 debug-connect:
 	$(call log,info,Connecting to QEMU)

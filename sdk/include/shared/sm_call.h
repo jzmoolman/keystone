@@ -1,6 +1,8 @@
 #ifndef __SM_CALL_H__
 #define __SM_CALL_H__
 
+#include <stdint.h>
+
 // BKE (Berkeley Keystone Enclave)
 #define SBI_EXT_EXPERIMENTAL_KEYSTONE_ENCLAVE 0x08424b45
 
