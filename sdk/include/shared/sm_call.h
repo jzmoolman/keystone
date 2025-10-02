@@ -1,7 +1,11 @@
 #ifndef __SM_CALL_H__
 #define __SM_CALL_H__
 
-#include <stdint.h>
+#ifdef __KERNEL__           // Defined when building a kernel module
+#include <linux/types.h>   // Provides u8, u16, u32, u64, etc.
+#else
+#include <stdint.h>        // Standard C types for userspace
+#endif
 
 // BKE (Berkeley Keystone Enclave)
 #define SBI_EXT_EXPERIMENTAL_KEYSTONE_ENCLAVE 0x08424b45

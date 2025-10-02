@@ -8,7 +8,13 @@
 #include <linux/ioctl.h>
 #include <linux/types.h>
 
-#include <stdint.h>
+#ifdef __KERNEL__           // Defined when building a kernel module
+#include <linux/types.h>   // Provides u8, u16, u32, u64, etc.
+#else
+#include <stdint.h>        // Standard C types for userspace
+#endif
+
+
 
 #include "sm_call.h"
 

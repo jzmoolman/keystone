@@ -31,7 +31,11 @@ OPENSBI_DEPENDENCIES += keystone-sm
 $(OPENSBI_TARGET_CONFIGURE): keystone-sm-install
 
 # Point OpenSBI at the correct location of the SM sources
+
+$(info ==> KEYSTONE_SM_BUILDDIR $(KEYSTONE_SM_BUILDDIR))
+#OPENSBI_MAKE_ENV += PLATFORM_DIR=/home/jzmoolman/src/keystone/sm/plat/
 OPENSBI_MAKE_ENV += PLATFORM_DIR=$(KEYSTONE_SM_BUILDDIR)/plat/
+$(info ==> OPENSBI_MAKE_ENV $(OPENSBI_MAKE_ENV))
 
 # For abi issue
 OPENSBI_MAKE_ENV += PLATFORM_RISCV_TOOLCHAIN_DEFAULT=0

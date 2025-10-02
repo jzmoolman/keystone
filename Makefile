@@ -25,7 +25,7 @@ export BUILDROOT_BUILDDIR       ?= $(BUILDDIR)/buildroot.build
 
 
 # options: generic, cva6, hifive_unmatched, mpfs
-export KEYSTONE_PLATFORM        ?= generic
+export KEYSTONE_PLATFORM        ?= et_genesys2
 export KEYSTONE_BITS            ?= 64
 
 include mkutils/args.mk
