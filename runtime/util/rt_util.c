@@ -41,7 +41,7 @@ void not_implemented_fatal(struct encl_ctx* ctx){
 #ifdef FATAL_DEBUG
     unsigned long addr, cause, pc;
     pc = ctx->regs.sepc;
-    addr = ctx->sbadaddr;
+    addr = ctx->stval;
     cause = ctx->scause;
     printf("[runtime] non-handlable interrupt/exception at 0x%lx on 0x%lx (scause: 0x%lx)\r\n", pc, addr, cause);
 #endif
@@ -57,7 +57,7 @@ void rt_page_fault(struct encl_ctx* ctx)
 #ifdef FATAL_DEBUG
   unsigned long addr, cause, pc;
   pc = ctx->regs.sepc;
-  addr = ctx->sbadaddr;
+  addr = ctx->stval;
   cause = ctx->scause;
   printf("[runtime] page fault at 0x%lx on 0x%lx (scause: 0x%lx)\r\n", pc, addr, cause);
 #endif

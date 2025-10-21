@@ -2,7 +2,8 @@
 #ifndef _LINUX_WRAP_H_
 #define _LINUX_WRAP_H_
 
-#include <bits/types/sigset_t.h>
+//#include <bits/types/sigset_t.h>
+#include <signal.h>
 #include <stddef.h>
 #include <stdint.h>
 

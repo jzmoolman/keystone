@@ -223,7 +223,7 @@ void paging_handle_page_fault(struct encl_ctx* ctx)
   uintptr_t frame;
   pte* entry;
 
-  addr = ctx->sbadaddr;
+  addr = ctx->stval;
 
   /* VA legitimacy check */
   if (addr >= EYRIE_LOAD_START)

@@ -21,8 +21,10 @@ int copy_block_to_sm(mprv_block *dst, uintptr_t src);
 # define LOG_REGBYTES 2
 #endif
 
-#define REGBYTES (1 << LOG_REGBYTES)
-#define MPRV_BLOCK (REGBYTES * 8)
+
+
+#define REGBYTES (1 << LOG_REGBYTES) // 8 byte for 64
+#define MPRV_BLOCK (REGBYTES * 8) // 64bits
 
 static inline int copy_from_sm(uintptr_t dst, void *src_buf, size_t len)
 {

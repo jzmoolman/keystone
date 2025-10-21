@@ -80,7 +80,7 @@ static inline void context_switch_to_enclave(struct sbi_trap_regs* regs,
   int memid;
   for(memid=0; memid < ENCLAVE_REGIONS_MAX; memid++) {
     if(enclaves[eid].regions[memid].type != REGION_INVALID) {
-      pmp_set_keystone(enclaves[eid].regions[memid].pmp_rid, PMP_ALL_PERM);
+      pmp_set_keystone(enclaves[eid].regions[memid].pmp_rid, PMP_ALL_PERM, PMP_SF_ENABLE);
     }
   }
 
@@ -97,7 +97,7 @@ static inline void context_switch_to_host(struct sbi_trap_regs *regs,
   int memid;
   for(memid=0; memid < ENCLAVE_REGIONS_MAX; memid++) {
     if(enclaves[eid].regions[memid].type != REGION_INVALID) {
-      pmp_set_keystone(enclaves[eid].regions[memid].pmp_rid, PMP_NO_PERM);
+      pmp_set_keystone(enclaves[eid].regions[memid].pmp_rid, PMP_NO_PERM, PMP_SF_ENABLE );
     }
   }
   osm_pmp_set(PMP_ALL_PERM);

@@ -1,4 +1,5 @@
-//******************************************************************************
+//******************************************************************************SE
+//
 // Copyright (c) 2018, The Regents of the University of California (Regents).
 // All Rights Reserved. See LICENSE for license details.
 //------------------------------------------------------------------------------
@@ -9,6 +10,7 @@
 #include "sm-sbi-opensbi.h"
 #include "page.h"
 #include "ipi.h"
+#include <sbi/sbi_console.h>
 #include <sbi/sbi_hart.h>
 #include <sbi/riscv_asm.h>
 #include <sbi/riscv_locks.h>
@@ -81,9 +83,9 @@ static inline uintptr_t region_pmpaddr_val(region_id i)
     return 0;
 }
 
-static inline uintptr_t region_pmpcfg_val(region_id i, pmpreg_id reg_idx, uint8_t perm_bits)
+static inline uintptr_t region_pmpcfg_val(region_id i, pmpreg_id reg_idx, uint8_t perm_bits, uint8_t security_feature)
 {
-  return (uintptr_t) (regions[i].addrmode | perm_bits) << (8*(reg_idx%PMP_PER_GROUP));
+  return (uintptr_t) (regions[i].addrmode | perm_bits | security_feature) << (8*(reg_idx%PMP_PER_GROUP));
 }
 
 static void region_clear_all(region_id i)
@@ -221,6 +223,9 @@ int pmp_set_global(int region_idx, uint8_t perm)
   return SBI_ERR_SM_PMP_SUCCESS;
 }
 
+#define CONFIG_PORT_BASE  0x2010000UL
+
+
 void pmp_init(void)
 {
   uintptr_t pmpaddr = 0;
@@ -229,21 +234,34 @@ void pmp_init(void)
   for (i=0; i < PMP_N_REG; i++)
   {
     switch(i) {
-#define X(n,g) case n: { PMP_SET(n, g, pmpaddr, pmpcfg); break; }
+#define X(n,g) case n: { \
+      PMP_SET(n, g, pmpaddr, pmpcfg); \
+      uint64_t *cfgport = (uint64_t *)(CONFIG_PORT_BASE + (g << 3)); \
+      *cfgport = pmpcfg; \
+      uint64_t *addrport = (uint64_t *)(CONFIG_PORT_BASE + ((15 + n) << 3)); \
+      *addrport = pmpaddr; \
+      break; }
       LIST_OF_PMP_REGS
 #undef X
     }
   }
 }
 
-int pmp_set_keystone(int region_idx, uint8_t perm)
+
+
+int pmp_set_keystone(int region_idx, uint8_t perm, uint8_t security_feature)
 {
+
+//	sbi_printf("Debugging\n");
+
+
+
   if(!is_pmp_region_valid(region_idx))
     PMP_ERROR(SBI_ERR_SM_PMP_REGION_INVALID, "Invalid PMP region index");
 
   uint8_t perm_bits = perm & PMP_ALL_PERM;
   pmpreg_id reg_idx = region_register_idx(region_idx);
-  uintptr_t pmpcfg = region_pmpcfg_val(region_idx, reg_idx, perm_bits);
+  uintptr_t pmpcfg = region_pmpcfg_val(region_idx, reg_idx, perm_bits, security_feature);
   uintptr_t pmpaddr;
 
   pmpaddr = region_pmpaddr_val(region_idx);
@@ -251,12 +269,18 @@ int pmp_set_keystone(int region_idx, uint8_t perm)
   //sbi_printf("pmp_set() [hart %d]: reg[%d], mode[%s], range[0x%lx-0x%lx], perm[0x%x]\r\n",
   //       current_hartid(), reg_idx, (region_is_tor(region_idx) ? "TOR":"NAPOT"),
   //       region_get_addr(region_idx), region_get_addr(region_idx) + region_get_size(region_idx), perm);
-  //sbi_printf("  pmp[%d] = pmpaddr: 0x%lx, pmpcfg: 0x%lx\r\n", reg_idx, pmpaddr, pmpcfg);
+  // sbi_printf("  pmp[%d] = pmpaddr: 0x%lx, pmpcfg: 0x%lx\r\n", reg_idx, pmpaddr, pmpcfg);
 
   int n=reg_idx;
 
   switch(n) {
-#define X(n,g) case n: { PMP_SET(n, g, pmpaddr, pmpcfg); break; }
+#define X(n,g) case n: { \
+  PMP_SET(n, g, pmpaddr, pmpcfg); \
+  uint64_t *cfgport = (uint64_t *)(CONFIG_PORT_BASE + (g << 3)); \
+  *cfgport = pmpcfg; \
+  uint64_t *addrport = (uint64_t *)(CONFIG_PORT_BASE + ((15 + n) << 3)); \
+  *addrport = pmpaddr; \
+  break; }
   LIST_OF_PMP_REGS
 #undef X
     default:
@@ -270,8 +294,20 @@ int pmp_set_keystone(int region_idx, uint8_t perm)
     pmpcfg = 0;
     pmpaddr = region_get_addr(region_idx) >> 2;
     switch(n) {
-#define X(n,g) case n: { PMP_SET(n, g, pmpaddr, pmpcfg); break; }
+#define X(n,g) case n: { \
+      PMP_SET(n, g, pmpaddr, pmpcfg); \
+      uint64_t *cfgport = (uint64_t *)(CONFIG_PORT_BASE + (g << 3)); \
+      *cfgport = pmpcfg; \
+      uint64_t *addrport = (uint64_t *)(CONFIG_PORT_BASE + ((15 + n) << 3)); \
+      *addrport = pmpaddr; \
+      break; }
   LIST_OF_PMP_REGS
+
+      //volatile uint64_t *port = (volatile uint64_t *)(CONFIG_PORT_BASE + (0x3A0 << g));
+      //volatile uint64_t *cfgport = (volatile uint64_t *)(CONFIG_PORT_BASE + (g << 3));
+      //*cfgport = pmpcfg; 
+      //*addrport = pmpaddr;
+
 #undef X
     default:
       sm_assert(false);

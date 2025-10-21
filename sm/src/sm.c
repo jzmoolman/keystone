@@ -34,7 +34,7 @@ byte dev_public_key[PUBLIC_KEY_SIZE] = { 0, };
 int osm_pmp_set(uint8_t perm)
 {
   /* in case of OSM, PMP cfg is exactly the opposite.*/
-  return pmp_set_keystone(os_region_id, perm);
+  return pmp_set_keystone(os_region_id, perm, PMP_SF_ENABLE);
 }
 
 static int smm_init(void)
@@ -158,8 +158,8 @@ void sm_init(bool cold_boot)
 
   /* below are executed by all harts */
   pmp_init();
-  pmp_set_keystone(sm_region_id, PMP_NO_PERM);
-  pmp_set_keystone(os_region_id, PMP_ALL_PERM);
+  pmp_set_keystone(sm_region_id, PMP_NO_PERM, PMP_SF_ENABLE);
+  pmp_set_keystone(os_region_id, PMP_ALL_PERM, PMP_SF_ENABLE);
 
   /* Fire platform specific global init */
   if (platform_init_global() != SBI_ERR_SM_ENCLAVE_SUCCESS) {

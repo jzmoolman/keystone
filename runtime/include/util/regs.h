@@ -46,7 +46,7 @@ struct encl_ctx {
 	struct regs regs;
   /* Supervisor CSRs */
 	uintptr_t sstatus;//32
-	uintptr_t sbadaddr;//33
+	uintptr_t stval;//33
 	uintptr_t scause;//34
 };
 #endif /* _REGS_H_ */
